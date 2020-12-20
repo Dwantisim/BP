@@ -20,15 +20,7 @@ public class Alocation {
 	private Worker worker;
 	private Worker VP;
 	private int value;
-	public Alocation(Long id, Worker worker, Worker vP, int value) {
-		super();
-		this.id = id;
-		this.worker = worker;
-		VP = vP;
-		this.value = value;
-	
-	
-	}
+
 	public Long getId() {
 		return id;
 	}
