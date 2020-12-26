@@ -1,4 +1,4 @@
-package pack1.plans;
+package cz.zcu.students.capacityAlocator.controller;
 
 import java.net.URI;
 import java.util.List;
@@ -12,21 +12,28 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import cz.zcu.students.capacityAlocator.exceptions.PlanNotFoundException;
+import cz.zcu.students.capacityAlocator.model.Plan;
+import cz.zcu.students.capacityAlocator.repository.PlanRepository;
+
 @RestController
+@RequestMapping("/api/plans")
+
 public class PlansController {
 
 	@Autowired
 	private PlanRepository planRepository;
 
-	@GetMapping("/plans")
+	@GetMapping
 	public List<Plan> retrieveAllPlans() {
 		return planRepository.findAll();
 	}
 
-	@GetMapping("/plans/{id}")
+	@GetMapping("/{id}")
 	public Plan retrievePlan(@PathVariable long id) {
 		Optional<Plan> plan = planRepository.findById(id);
 
@@ -36,12 +43,12 @@ public class PlansController {
 		return plan.get();
 	}
 
-	@DeleteMapping("/plans/{id}")
+	@DeleteMapping("/{id}")
 	public void deleteWorker(@PathVariable long id) {
 		planRepository.deleteById(id);
 	}
 
-	@PostMapping("/plans")
+	@PostMapping
 	public ResponseEntity<Object> createPlan(@RequestBody Plan plan) {
 		Plan savedPlan = planRepository.save(plan);
 
@@ -52,7 +59,7 @@ public class PlansController {
 
 	}
 	
-	@PutMapping("/plans/{id}")
+	@PutMapping("/{id}")
 	public ResponseEntity<Object> updatePlan(@RequestBody Plan plan, @PathVariable long id) {
 
 		Optional<Plan> planOptional = planRepository.findById(id);

@@ -1,53 +1,62 @@
-package pack1.alocations;
+package cz.zcu.students.capacityAlocator.model;
 
-import java.util.List;
-
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import pack1.worker.Worker;
-import pack1.worker.WorkerController;
-
-@SpringBootApplication
+@Entity
 public class Alocation {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private Worker worker;
-	private Worker VP;
-	private int value;
+	private Long idWorker;
+
+	private Long idVP;
+
+	private Long idPlan;
+
+	private int manDays;
 
 	public Long getId() {
 		return id;
 	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Worker getWorker() {
-		return worker;
+
+	public int getManDays() {
+		return manDays;
 	}
-	public void setWorker(Worker worker) {
-		this.worker = worker;
+
+	public void setManDays(int manDays) {
+		this.manDays = manDays;
 	}
-	public Worker getVP() {
-		return VP;
+
+	public Long getIdWorker() {
+		return idWorker;
 	}
-	public void setVP(Worker vP) {
-		VP = vP;
+
+	public void setIdWorker(Long idWorker) {
+		this.idWorker = idWorker;
 	}
-	public int getValue() {
-		return value;
+
+	public Long getIdVP() {
+		return idVP;
 	}
-	public void setValue(int value) {
-		this.value = value;
+
+	public void setIdVP(Long idVP) {
+		this.idVP = idVP;
 	}
-	public static List<Alocation> getAllAlocations () {
-		List<Alocation> alocations = AlocationController.retrieveAllAlocations();
-		return alocations;
-		
+
+	public Long getIdPlan() {
+		return idPlan;
 	}
+
+	public void setIdPlan(Long idPlan) {
+		this.idPlan = idPlan;
+	}
+
 }

@@ -1,62 +1,67 @@
-package pack1.WorkerSummary;
+package cz.zcu.students.capacityAlocator.service;
+
+import java.util.HashMap;
 
 import java.util.List;
 
-import pack1.alocations.Alocation;
-import pack1.alocations.AlocationController;
-import pack1.worker.Worker;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-public class workerSummaryService {
-	public static WorkerSummary workerSummary(Worker worker, int days) {
-		List<Alocation> lAlocation = AlocationController.retrieveAllAlocations();
-		for (Alocation alocation : lAlocation) {
-			if (alocation.getWorker() != worker){
-				lAlocation.remove(alocation);
+import cz.zcu.students.capacityAlocator.model.Alocation;
+import cz.zcu.students.capacityAlocator.model.Plan;
+import cz.zcu.students.capacityAlocator.model.Worker;
+import cz.zcu.students.capacityAlocator.model.WorkerSummary;
+
+@Service
+public class WorkerSummaryServiceImpl implements WorkerSummaryService {
+	
+	@Autowired
+	AlocationService alocationService;
+	
+	@Autowired
+	WorkerService workerService;
+	
+	@Autowired
+	PlanService planService;
+	
+	public WorkerSummary workerSummary(Long idPlan, Long idWorker) {
+
+		Worker worker = workerService.retrieveWorker(idWorker);
+		Plan plan= planService.retrievePlan(idPlan);
+		WorkerSummary summary = new WorkerSummary();
+		
+		summary.setId(worker.getId());
+		summary.setShortcut(worker.getShortcut());
+		summary.setSection(worker.getSection());
+		summary.setHarness(worker.getHarness());
+		summary.setHarnessCapacity(Math.round(worker.getHarness() * plan.getDays()));
+		summary.setCapacity(Math.round(worker.getHarness() * plan.getDays()) - worker.getReserve() - worker.getAbsence());
+		summary.setAbsence(worker.getAbsence());
+		summary.setReserve(worker.getReserve());
+		summary.setSpecCapacity(0);
+		summary.setNote(worker.getNote());
+		
+		List<Alocation> alocations = alocationService.retrieveAlocationsByPlanAndWorker(idPlan,idWorker);
+
+		HashMap<Long, Integer> alocationMap = summary.getAlocations();
+		Integer totalAlocation = 0;
+		for (Alocation alocation : alocations) {
+			Long idVP = alocation.getIdVP();
+			Integer manDays;
+			if (alocationMap.containsKey(idVP)) {
+				manDays = alocationMap.get(idVP);
 			}
-		}
-		int tempAlocated = 0;
-		for (Alocation alocation : lAlocation) {
-			tempAlocated += alocation.getValue();
-		}
-		
-		Worker[] allVPs = new Worker[getAllVPs().size()];
-		allVPs = (Worker[]) getAllVPs().toArray();
-		int[] workerAlocations = new int[allVPs.length];
-		int temp = 0;
-		for (Worker VP : allVPs) {
-			for (Alocation alocation : lAlocation) {
-				if(alocation.getVP() == VP && alocation.getWorker() == worker) {
-					workerAlocations[temp] = alocation.getValue();
-					temp++;
-				}
+			else {
+				manDays = 0;
 			}
+
+			alocationMap.put(idVP, manDays + alocation.getManDays());
+			totalAlocation += alocation.getManDays();
 		}
 		
-		WorkerSummary result = new WorkerSummary();
-		
-		result.setShortcut(worker.getShortcut());
-		result.setAlocations(workerAlocations);
-		result.setSection(worker.getSection());
-		result.setHarness(worker.getHarness());
-		result.setHarnessCapacity(Math.round(worker.getHarness() * days));
-		result.setCapacity(Math.round(worker.getHarness() * days) - worker.getReserve() - worker.getAbsence());
-		result.setAbsence(worker.getAbsence());
-		result.setReserve(worker.getReserve());
-		result.setFreeCapacity(Math.round(worker.getHarness() * days) - worker.getReserve() - worker.getAbsence() - tempAlocated);
-		result.setSpecCapacity(0);
-		result.setNote(worker.getNote());
-		
-		
-		return result; 
+		summary.setFreeCapacity(Math.round(worker.getHarness() * plan.getDays()) - worker.getReserve() - worker.getAbsence() - totalAlocation);
+
+		return summary; 
 	} 
-	public static  List<Worker> getAllVPs () {
-    	
-    	List<Worker> allWorkers = Worker.getAllWorkers();
-    	for (Worker worker : allWorkers) {
-    		if (worker.getVP() == false) {
-    			allWorkers.remove(worker);
-    		}
-    	}
-    	return allWorkers;
-    }
+	
 }

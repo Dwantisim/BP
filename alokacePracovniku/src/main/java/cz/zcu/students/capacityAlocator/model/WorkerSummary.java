@@ -1,13 +1,6 @@
-package pack1.WorkerSummary;
+package cz.zcu.students.capacityAlocator.model;
 
-import java.util.Iterator;
-import java.util.List;
-
-import org.hsqldb.Table;
-
-import pack1.alocations.Alocation;
-import pack1.alocations.AlocationController;
-import pack1.worker.Worker;
+import java.util.HashMap;
 
 public class WorkerSummary {
 	private Long id;
@@ -22,13 +15,14 @@ public class WorkerSummary {
 	private int freeCapacity;
 	private int specCapacity;
 	private String note;
-	private int [] alocations;
-	public int[] getAlocations() {
-		return alocations;
-	}
+	private HashMap<Long, Integer> alocations;
 
-	public void setAlocations(int[] alocations) {
-		this.alocations = alocations;
+	public WorkerSummary() {
+		alocations = new HashMap<Long, Integer>();
+	}
+	
+	public HashMap<Long, Integer> getAlocations() {
+		return alocations;
 	}
 
 	public Long getId() {
@@ -118,6 +112,5 @@ public class WorkerSummary {
 	public void setNote(String note) {
 		this.note = note;
 	}
-
 
 }

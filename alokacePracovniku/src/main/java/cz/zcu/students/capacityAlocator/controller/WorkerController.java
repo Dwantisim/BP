@@ -1,8 +1,7 @@
-package pack1.worker;
+package cz.zcu.students.capacityAlocator.controller;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,38 +11,49 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import cz.zcu.students.capacityAlocator.model.Worker;
+import cz.zcu.students.capacityAlocator.service.WorkerService;
+
 @RestController
+@RequestMapping("/api")
 public class WorkerController {
 
 	@Autowired
-	private static WorkerRepository workerRepository;
+	private WorkerService workerService;
 
 	@GetMapping("/workers")
-	public static List<Worker> retrieveAllWorkers() {
-		return workerRepository.findAll();
+	public ResponseEntity<List<Worker>> retrieveAllWorkers() {
+		List<Worker> workers = workerService.retrieveAllWorkers();
+
+		return ResponseEntity.ok(workers);
+	}
+
+	@GetMapping("/vps")
+	public ResponseEntity<List<Worker>> retrieveAllVPs() {
+		List<Worker> workers = workerService.getAllVPs();
+
+		return ResponseEntity.ok(workers);
 	}
 
 	@GetMapping("/workers/{id}")
-	public Worker retrieveWorker(@PathVariable long id) {
-		Optional<Worker> worker = workerRepository.findById(id);
+	public Worker retrieveWorker(@PathVariable Long id) {
+		Worker worker = workerService.retrieveWorker(id);
 
-		if (!worker.isPresent())
-			throw new WorkerNotFoundException("id-" + id);
-
-		return worker.get();
+		return worker;
 	}
 
 	@DeleteMapping("/workers/{id}")
-	public void deleteWorker(@PathVariable long id) {
-		workerRepository.deleteById(id);
+	public void deleteWorker(@PathVariable Long id) {
+		workerService.deleteWorker(id);
 	}
 
 	@PostMapping("/workers")
 	public ResponseEntity<Object> createWorker(@RequestBody Worker worker) {
-		Worker savedWorker = workerRepository.save(worker);
+		Worker savedWorker = workerService.createWorker(worker);
 
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(savedWorker.getId()).toUri();
@@ -51,19 +61,12 @@ public class WorkerController {
 		return ResponseEntity.created(location).build();
 
 	}
-	
+
 	@PutMapping("/workers/{id}")
-	public ResponseEntity<Object> updateWorker(@RequestBody Worker worker, @PathVariable long id) {
+	public ResponseEntity<Object> updateWorker(@RequestBody Worker worker, @PathVariable Long id) {
 
-		Optional<Worker> workerOptional = workerRepository.findById(id);
+		worker = workerService.updateWorker(worker, id);
 
-		if (!workerOptional.isPresent())
-			return ResponseEntity.notFound().build();
-
-		worker.setId(id);
-		
-		workerRepository.save(worker);
-
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.accepted().build();
 	}
 }

@@ -1,4 +1,4 @@
-package pack1.alocations;
+package cz.zcu.students.capacityAlocator.exceptions;
 
 public class AlocationNotFoundException extends RuntimeException {
 

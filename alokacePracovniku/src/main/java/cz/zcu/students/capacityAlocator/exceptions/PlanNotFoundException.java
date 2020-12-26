@@ -1,4 +1,4 @@
-package pack1.plans;
+package cz.zcu.students.capacityAlocator.exceptions;
 
 public class PlanNotFoundException extends RuntimeException {
 

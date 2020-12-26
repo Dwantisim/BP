@@ -1,12 +1,9 @@
-package pack1.alocations;
-//TODO - chybí vrstva servise - veškerá práce nad repository
-//ToDo - remove static
+package cz.zcu.students.capacityAlocator.controller;
 
-import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,69 +11,54 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import pack1.worker.Worker;
+import cz.zcu.students.capacityAlocator.model.Alocation;
+import cz.zcu.students.capacityAlocator.service.AlocationService;
 
-@RestController
+@RestController	
+@RequestMapping("/api/alocation")
 public class AlocationController {
 
 	@Autowired
-	private static  AlocationRepository alocationRepository;
+	private AlocationService alocationService;
 
-	@GetMapping("/alocations")
-	public static  List<Alocation> retrieveAllAlocations() {
-		return alocationRepository.findAll();
+	@GetMapping
+	public List<Alocation> retrieveAllAlocations() {
+		return alocationService.retrieveAllAlocations();
 	}
 
-	@GetMapping("/alocations/{id}")
-	public Alocation retrieveAlocation(@PathVariable long id) {
-		Optional<Alocation> alocation = alocationRepository.findById(id);
+	@GetMapping("/{id}")
+	public Alocation retrieveAlocation(@PathVariable Long id) {
+		Alocation alocation = alocationService.retrieveAlocation(id);
 
-		if (!alocation.isPresent())
-			throw new AlocationNotFoundException("id-" + id);
-
-		return alocation.get();
+		return alocation;
 	}
-	//@GetMapping("/alocations/{Alocation}")
-	///public Alocation retrieveAlocation(@PathVariable Alocation alocation) {
-		//Optional<Alocation> alocation1 = alocationRepository.findById(alocation1.get());
 
-		//if (!alocation1.isPresent())
-			//throw new AlocationNotFoundException("alocation-" + alocation1);
+	@GetMapping("/worker/{idWorker}")
+	public List<Alocation> retrieveAlocationByWorker(@PathVariable Long idWorker) {
+		List<Alocation> alocations = alocationService.retrieveAlocationsByWorker(idWorker);
 
-		//return alocation1.get();
-	//}
+		return alocations;
+	}
 
-	@DeleteMapping("/alocations/{id}")
+	@DeleteMapping("/{id}")
 	public void deleteAlocation(@PathVariable long id) {
-		alocationRepository.deleteById(id);
+		alocationService.deleteAlocation(id);
 	}
 
-	@PostMapping("/alocations")
-	public ResponseEntity<Object> createAlocation(@RequestBody Alocation alocation) {
-		Alocation savedAlocation = alocationRepository.save(alocation);
+	@PostMapping
+	public ResponseEntity<Alocation> createAlocation(@RequestBody Alocation alocation) {
+		Alocation savedAlocation = alocationService.createAlocation(alocation);
 
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(savedAlocation.getId()).toUri();
-
-		return ResponseEntity.created(location).build();
-
+		return ResponseEntity.status(HttpStatus.CREATED).body(savedAlocation);
 	}
-	
-	@PutMapping("/alocations/{id}")
-	public ResponseEntity<Object> updateAlocation(@RequestBody Alocation alocation, @PathVariable long id) {
 
-		Optional<Alocation> alocationOptional = alocationRepository.findById(id);
+	@PutMapping("/{id}")
+	public ResponseEntity<Alocation> updateAlocation(@RequestBody Alocation alocation, @PathVariable long id) {
+		Alocation savedAlocation = alocationService.updateAlocation(alocation, id);
 
-		if (!alocationOptional.isPresent())
-			return ResponseEntity.notFound().build();
-
-		alocation.setId(id);
-		
-		alocationRepository.save(alocation);
-
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(savedAlocation);
 	}
 }

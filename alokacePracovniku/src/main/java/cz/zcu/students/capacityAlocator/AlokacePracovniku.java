@@ -1,4 +1,4 @@
-package pack1;
+package cz.zcu.students.capacityAlocator;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

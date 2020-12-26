@@ -1,4 +1,4 @@
-package pack1.WorkerSummary;
+package cz.zcu.students.capacityAlocator.exceptions;
 
 public class WorkerSummaryNotFoundException extends RuntimeException {
 

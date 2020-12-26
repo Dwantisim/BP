@@ -1,67 +1,36 @@
-package pack1.worker;
-import java.util.List;
+package cz.zcu.students.capacityAlocator.model;
 
-//ToDo Pull z databáze
-//ToDo Absence
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
 public class Worker {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-    private String forName;
-    private String famName;
-    private String shortcut;
-    private String section;
-    private Long harness;
 
-    private int reserve;
-    private int absence;
-   
-    private String note;
-    private boolean VP;
-    
-    public Worker(Long id, String forName, String famName, String shortcut, String section, Long harness, int reserve,
-			int absence, String note, boolean vP) {
-		super();
-		this.id = id;
-		this.forName = forName;
-		this.famName = famName;
-		this.shortcut = shortcut;
-		this.section = section;
-		this.harness = harness;
-		this.reserve = reserve;
-		this.absence = absence;
-		this.note = note;
-		VP = vP;
-	}
+	private String forName;
+	private String famName;
+	private String shortcut;
+	private String section;
+	private Long harness;
 
-	public Worker() {
-		super();
-	}
+	private int reserve;
+	private int absence;
 
-	public Worker(Long id, String name, String famName) {
-		super();
-		this.id = id;
-		this.forName = name;
-		this.famName = famName;
-	}
+	private String note;
+	private String vp;
+
 	public Long getId() {
 		return id;
 	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public String getName() {
-		return forName;
-	}
-	public void setName(String name) {
-		this.forName = name;
-	}
+
 	public String getForName() {
 		return forName;
 	}
@@ -126,24 +95,11 @@ public class Worker {
 		this.note = note;
 	}
 
-	public String getfamName() {
-		return famName;
-	}
-	public void setfamName(String famName) {
-		this.famName = famName;
+	public String getVp() {
+		return vp;
 	}
 
-	public static List<Worker> getAllWorkers () {
-		List<Worker> workers = WorkerController.retrieveAllWorkers();
-		return workers;
-		
-	}
-	public boolean getVP() {
-		return VP;
-	}
-
-	public void setVP(boolean VP) {
-		this.VP = VP;
+	public void setVp(String vp) {
+		this.vp = vp;
 	}
 }
-
