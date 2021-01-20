@@ -2,14 +2,28 @@ package pack1.WorkerSummary;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hsqldb.Table;
 
 import pack1.alocations.Alocation;
 import pack1.alocations.AlocationController;
 import pack1.worker.Worker;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Data
+@NoArgsConstructor
+@Builder(toBuilder = true)
+@Entity
+@AllArgsConstructor
 public class WorkerSummary {
+	@Id
 	private Long id;
 
 	private String shortcut;
@@ -22,14 +36,11 @@ public class WorkerSummary {
 	private int freeCapacity;
 	private int specCapacity;
 	private String note;
-	private int [] alocations;
-	public int[] getAlocations() {
-		return alocations;
-	}
+	//@Map
+	//private Map<Worker,Integer> alocations;
 
-	public void setAlocations(int[] alocations) {
-		this.alocations = alocations;
-	}
+
+
 
 	public Long getId() {
 		return id;

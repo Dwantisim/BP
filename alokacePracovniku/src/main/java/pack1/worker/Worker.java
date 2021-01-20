@@ -1,4 +1,9 @@
 package pack1.worker;
+
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.List;
 
 //ToDo Pull z databáze
@@ -8,6 +13,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
+@Data
+
+@Builder(toBuilder = true)
+
 public class Worker {
 	@Id
 	@GeneratedValue
@@ -17,14 +26,21 @@ public class Worker {
     private String famName;
     private String shortcut;
     private String section;
-    private Long harness;
+    private long harness;
 
     private int reserve;
     private int absence;
    
     private String note;
     private boolean VP;
-    
+
+
+
+
+
+
+
+
     public Worker(Long id, String forName, String famName, String shortcut, String section, Long harness, int reserve,
 			int absence, String note, boolean vP) {
 		super();
@@ -133,17 +149,17 @@ public class Worker {
 		this.famName = famName;
 	}
 
-	public static List<Worker> getAllWorkers () {
-		List<Worker> workers = WorkerController.retrieveAllWorkers();
-		return workers;
-		
-	}
-	public boolean getVP() {
+
+	public boolean isVP() {
 		return VP;
 	}
 
 	public void setVP(boolean VP) {
 		this.VP = VP;
 	}
+
+
+
+
 }
 
